@@ -4,7 +4,7 @@ ___
 
 ## Family Financial Control Api
 
-Esta é uma api a ser utilizada no processo de automatização do controle de gastos de minha família.
+Esta é uma api a ser utilizada para facilitar o processo de controle de gastos de minha família.
 
 
 ### UML
