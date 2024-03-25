@@ -19,6 +19,7 @@ return new class extends Migration
             $table->double('debit')->nullable(false);
             $table->string('note');
             $table->unsignedBigInteger('financial_service_id')->nullable(false);
+            $table->auditable();
             $table->timestamps();
 
             // Define a foreign key constraint
