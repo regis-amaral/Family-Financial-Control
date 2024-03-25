@@ -9,7 +9,7 @@ use App\Models\FinancialService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
-class FinancialServiceController extends Controller
+class FinancialServiceController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -33,6 +33,7 @@ class FinancialServiceController extends Controller
      */
     public function store(StoreFinancialServiceRequest $request)
     {
+//        dd($request);
         $financialService = FinancialService::create($request->all());
 
         return response()->json(['message' => 'criado com sucesso', 'data' => new FinancialServiceResource($financialService)], 201);
