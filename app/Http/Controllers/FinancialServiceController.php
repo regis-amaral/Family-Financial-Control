@@ -11,64 +11,35 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 class FinancialServiceController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Request $request): JsonResponse
     {
         return response()->json(FinancialService::all());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function welcome(): JsonResponse
-    {
-        $response['status'] = 'API Online';
-        return Response::json($response);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreFinancialServiceRequest $request)
     {
-//        dd($request);
         $financialService = FinancialService::create($request->all());
 
         return response()->json(['message' => 'criado com sucesso', 'data' => new FinancialServiceResource($financialService)], 201);
-
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(FinancialService $financialService)
     {
         return response()->json($financialService);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(FinancialService $financialService)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateFinancialServiceRequest $request, FinancialService $financialService)
     {
-        //
+        $financialService
+            ->fill($request->all())
+            ->save();
+        return response()->json(['message' => 'atualizado com sucesso', 'data' => new FinancialServiceResource($financialService)], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(FinancialService $financialService)
     {
-        //
+        $financialService->delete();
+        return response()->json(['message' => 'removido com sucesso'], 200);
     }
 }

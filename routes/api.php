@@ -5,9 +5,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FinancialServiceController;
 use App\Http\Controllers\RegisterController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// SEM AUTENTICAÇÃO = SEM INFORMAÇÃO
+Route::middleware('guest')->group(function () {
+    Route::fallback(function () {
+        abort(404);
+    });
+});
 
 // ROTAS NÃO AUTENTICADAS
 Route::controller(RegisterController::class)->group(function(){
@@ -17,6 +20,9 @@ Route::controller(RegisterController::class)->group(function(){
 
 // ROTAS AUTENTICADAS
 Route::middleware('auth:sanctum')->group( function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
     Route::resource('financial-service', FinancialServiceController::class);
 });
 
