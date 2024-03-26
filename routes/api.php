@@ -1,24 +1,25 @@
 <?php
 
+
+use App\Http\Controllers\FinancialServiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FinancialServiceController;
-use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 
-// SEM AUTENTICAÇÃO = SEM INFORMAÇÃO
+// GRUPO DE ROTAS NÃO AUTENTICADAS
 Route::middleware('guest')->group(function () {
+    // Oculta qualquer informação de rota se não estiver autenticado
     Route::fallback(function () {
         abort(404);
     });
+    // Cadastro de Usuário
+    Route::post('register', [RegisterController::class, 'register']);
+    // Login de usuário
+    Route::post('login', [LoginController::class, 'login'])->middleware(['throttle:login']);
 });
 
-// ROTAS NÃO AUTENTICADAS
-Route::controller(RegisterController::class)->group(function () {
-    Route::post('register', 'register');
-    Route::post('login', 'login')->middleware(['throttle:login']);
-});
-
-// ROTAS AUTENTICADAS
+// GRUPO DE ROTAS AUTENTICADAS
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
