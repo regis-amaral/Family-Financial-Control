@@ -20,26 +20,15 @@ class RegisterController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', Password::min(8)
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required',
+                Password::min(8)
                 ->letters()
                 ->mixedCase()
                 ->numbers()
-                ->symbols()],
+                ->symbols()
+            ],
             'c_password' => ['required'],
-        ], [
-            'name.required' => 'The name field is required.',
-            'name.string' => 'The name must be a string.',
-            'email.required' => 'The email field is required.',
-            'email.email' => 'The email must be a valid email address.',
-            'email.unique' => 'The email must be a unique email address.',
-            'password.required' => 'The confirmation password field is required.',
-            'password.min' => 'The password must be at least 8 characters.',
-            'password.letters' => 'The password must contain at least one letter.',
-            'password.mixed_case' => 'The password must contain both uppercase and lowercase letters.',
-            'password.numbers' => 'The password must contain at least one number.',
-            'password.symbols' => 'The password must contain at least one symbol.',
-            'c_password.required' => 'The password field is required.',
         ]);
 
         if ($validator->fails()) {

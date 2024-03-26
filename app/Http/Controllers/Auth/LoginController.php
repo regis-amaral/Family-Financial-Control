@@ -20,12 +20,7 @@ class LoginController extends BaseController
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'email'],
             'password' => ['required'],
-        ],
-            [
-                'email.required' => 'The email field is required.',
-                'email.email' => 'The email must be a valid email address.',
-                'password.required' => 'The password field is required.',
-            ]);
+        ]);
 
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors(), 422);
