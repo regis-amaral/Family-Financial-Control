@@ -13,13 +13,13 @@ Route::middleware('guest')->group(function () {
 });
 
 // ROTAS NÃO AUTENTICADAS
-Route::controller(RegisterController::class)->group(function(){
+Route::controller(RegisterController::class)->group(function () {
     Route::post('register', 'register');
-    Route::post('login', 'login');
+    Route::post('login', 'login')->middleware(['throttle:login']);
 });
 
 // ROTAS AUTENTICADAS
-Route::middleware('auth:sanctum')->group( function () {
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
