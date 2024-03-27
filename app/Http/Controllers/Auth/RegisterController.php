@@ -14,7 +14,7 @@ class RegisterController extends BaseController
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'alpha'],
+            'name' => ['required', 'string', 'regex:/^[a-zA-Z\s]*$/'],
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required',
                 Password::min(8)
@@ -22,8 +22,7 @@ class RegisterController extends BaseController
                 ->mixedCase()
                 ->numbers()
                 ->symbols()
-            ],
-            'c_password' => ['required'],
+            ]
         ]);
 
         if ($validator->fails()) {
