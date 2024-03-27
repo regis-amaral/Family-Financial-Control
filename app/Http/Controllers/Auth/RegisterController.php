@@ -11,15 +11,10 @@ use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends BaseController
 {
-    /**
-     * Register api
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string', 'alpha'],
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required',
                 Password::min(8)

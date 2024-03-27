@@ -19,7 +19,7 @@ class FinancialServiceController extends BaseController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string', 'alpha'],
         ]);
 
         if ($validator->fails()) {
