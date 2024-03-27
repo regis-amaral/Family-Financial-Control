@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreFinancialServiceRequest;
-use App\Http\Requests\UpdateFinancialServiceRequest;
 use App\Http\Resources\FinancialServiceResource;
 use App\Models\FinancialService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 class FinancialServiceController extends BaseController
 {
 
@@ -17,11 +16,22 @@ class FinancialServiceController extends BaseController
         return response()->json(FinancialService::all());
     }
 
-    public function store(StoreFinancialServiceRequest $request)
+    public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 422);
+        }
+
         $financialService = FinancialService::create($request->all());
 
-        return response()->json(['message' => 'criado com sucesso', 'data' => new FinancialServiceResource($financialService)], 201);
+        return $this->sendResponse(new FinancialServiceResource($financialService),
+            'criado com sucesso',
+            201);
+
     }
 
     public function show(FinancialService $financialService)
@@ -29,8 +39,16 @@ class FinancialServiceController extends BaseController
         return response()->json($financialService);
     }
 
-    public function update(UpdateFinancialServiceRequest $request, FinancialService $financialService)
+    public function update(Request $request, FinancialService $financialService)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors(), 422);
+        }
+
         $financialService
             ->fill($request->all())
             ->save();

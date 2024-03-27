@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreFinancialTransactionRequest;
-use App\Http\Requests\UpdateFinancialTransactionRequest;
 use App\Models\FinancialTransaction;
+use Illuminate\Http\Request;
 
 class FinancialTransactionController extends Controller
 {
@@ -27,7 +26,7 @@ class FinancialTransactionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreFinancialTransactionRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -51,7 +50,7 @@ class FinancialTransactionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateFinancialTransactionRequest $request, FinancialTransaction $financialTransaction)
+    public function update(Request $request, FinancialTransaction $financialTransaction)
     {
         //
     }
