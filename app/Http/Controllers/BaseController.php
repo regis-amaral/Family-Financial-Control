@@ -3,17 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller as Controller;
 class BaseController extends Controller
 {
     /**
      * success response method.
      *
-     * @return \Illuminate\Http\Response
      */
-    public function sendResponse($result, $message, $code = 200): JsonResponse
+    public function sendResponse($result, $code = 200, $message = ''): JsonResponse
     {
+        if(!in_array($code, [200,201,202,204,205])){
+            throw new \InvalidArgumentException('Invalid response code.');
+        }
+
+        $message = $code == 201 ? __('messages.store.success') : $message;
+
         $response = [
             'success' => true,
             'data'    => $result,
@@ -26,7 +30,6 @@ class BaseController extends Controller
     /**
      * return error response.
      *
-     * @return \Illuminate\Http\Response
      */
     public function sendError($error, $errorMessages = [], $code = 404): JsonResponse
     {
