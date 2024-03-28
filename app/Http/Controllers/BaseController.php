@@ -31,7 +31,7 @@ class BaseController extends Controller
      * return error response.
      *
      */
-    public function sendError($error, $errorMessages = [], $code = 404): JsonResponse
+    public function sendError($error, $code = 404, $errorMessages = []): JsonResponse
     {
         $response = [
             'success' => false,

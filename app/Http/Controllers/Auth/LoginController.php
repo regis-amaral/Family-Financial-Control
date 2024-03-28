@@ -23,17 +23,25 @@ class LoginController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors(), 422);
+            return $this->sendError('Validation Error.', 422, $validator->errors());
         }
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1])) {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
+
+            // Verificar se o usuário está ativo
+            if (!$user->active) {
+                Auth::logout();
+                return $this->sendError('Unauthorized.', 401, __('messages.login.account_inactive'));
+            }
+
+            // Se todas as verificações passaram, criar e retornar o token de acesso
             $success['token'] = $user->createToken('MyApp')->plainTextToken;
             $success['name'] = $user->name;
 
-            return $this->sendResponse($success, 'User login successfully.');
+            return $this->sendResponse($success);
         } else {
-            return $this->sendError('Unauthorised.');
+            return $this->sendError('Unauthorized.', 401, __('messages.login.invalid_credentials'));
         }
     }
 
