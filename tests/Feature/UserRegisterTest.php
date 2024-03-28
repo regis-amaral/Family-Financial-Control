@@ -14,8 +14,32 @@ test('registrar um usuário com sucesso', function (){
         "password_confirmation" => "MyPersonalP@assword123",
     ];
     $response = $this->post('/api/register', $user_data);
-    $response->assertStatus(201);
-    //    $response->dump();
+
+    $response->assertStatus(201)
+        ->assertJson([
+            'message' => __('messages.store.success'),
+        ])
+        ->assertJsonStructure([
+            'success',
+            'data' => [
+                'token',
+                'name'
+            ],
+            'message'
+        ]);
+
+    // Obtenha o conteúdo JSON da resposta
+    $responseData = $response->json();
+
+    // Verifique se o token está presente e não está vazio
+    $this->assertArrayHasKey('token', $responseData['data']);
+    $this->assertNotEmpty($responseData['data']['token']);
+
+    // Verifique se o token é uma string de comprimento razoável
+    $this->assertIsString($responseData['data']['token']);
+    $this->assertGreaterThanOrEqual(20, strlen($responseData['data']['token']));
+
+//    $response->dump();
 });
 
 // TESTA CAMPOS OBRIGATÓRIOS
@@ -30,10 +54,10 @@ test('retornar 422 e mensagem ao não informar o campo nome', function (){
     $response->assertStatus(422)
         ->assertJson([
             'data' => [
-                'name' => ['O campo name é obrigatório.']
+                'name' => [__('validation.required',['attribute' => 'name'])]
             ],
         ]);
-    //    $response->dump();
+//        $response->dump();
 });
 
 test('retornar 422 e mensagem ao não informar o campo email', function (){
@@ -46,7 +70,7 @@ test('retornar 422 e mensagem ao não informar o campo email', function (){
     $response->assertStatus(422)
         ->assertJson([
             'data' => [
-                'email' => ['O campo email é obrigatório.']
+                'email' => [__('validation.required',['attribute' => 'email'])]
             ],
         ]);
     //    $response->dump();
@@ -62,7 +86,7 @@ test('retornar 422 e mensagem ao não informar o campo password', function (){
     $response->assertStatus(422)
         ->assertJson([
             'data' => [
-                'password' => ['O campo password é obrigatório.']
+                'password' => [__('validation.required',['attribute' => 'password'])]
             ],
         ]);
     //    $response->dump();
@@ -78,7 +102,7 @@ test('retornar 422 e mensagem ao não informar o campo password_confirmation', f
     $response->assertStatus(422)
         ->assertJson([
             'data' => [
-                'password' => ['A confirmação do campo password não corresponde.']
+                'password' => [__('validation.confirmed',['attribute' => 'password'])],
             ],
         ]);
 //        $response->dump();
@@ -98,27 +122,8 @@ test('retornar 422 e mensagens ao informar o campo nome com número', function (
         ->assertJson([
             'data' => [
                 'name' => [
-                    'O campo name deve ser uma string.',
-                    'O formato do campo name é inválido.'
-                ]
-            ],
-        ]);
-//    $response->dump();
-});
-
-test('retornar 422 e mensagens ao informar o campo email inválido', function (){
-    $user_data = [
-        "name" => "Jhon Due",
-        "email" => 123,
-        "password" => "MyPersonalP@assword123",
-        "password_confirmation" => "MyPersonalP@assword123",
-    ];
-    $response = $this->post('/api/register', $user_data);
-    $response->assertStatus(422)
-        ->assertJson([
-            'data' => [
-                'email' => [
-                    'O campo email deve ser um endereço de e-mail válido.'
+                    __('validation.string',['attribute' => 'name']),
+                    __('validation.regex',['attribute' => 'name']),
                 ]
             ],
         ]);
@@ -136,9 +141,7 @@ test('retornar 422 e mensagem ao informar o campo nome com número na string', f
     $response->assertStatus(422)
         ->assertJson([
             'data' => [
-                'name' => [
-                    'O formato do campo name é inválido.'
-                ]
+                'name' => [__('validation.regex',['attribute' => 'name'])],
             ],
         ]);
 //    $response->dump();
@@ -155,9 +158,24 @@ test('retornar 422 e mensagem ao informar o campo nome com caracter especial na 
     $response->assertStatus(422)
         ->assertJson([
             'data' => [
-                'name' => [
-                    'O formato do campo name é inválido.'
-                ]
+                'name' => [__('validation.regex',['attribute' => 'name'])],
+            ],
+        ]);
+//    $response->dump();
+});
+
+test('retornar 422 e mensagens ao informar o campo email inválido', function (){
+    $user_data = [
+        "name" => "Jhon Due",
+        "email" => 123,
+        "password" => "MyPersonalP@assword123",
+        "password_confirmation" => "MyPersonalP@assword123",
+    ];
+    $response = $this->post('/api/register', $user_data);
+    $response->assertStatus(422)
+        ->assertJson([
+            'data' => [
+                'email' => [__('validation.email',['attribute' => 'email'])],
             ],
         ]);
 //    $response->dump();
@@ -174,9 +192,7 @@ test('retornar 422 e mensagem ao informar a confirmação de senha errada', func
     $response->assertStatus(422)
         ->assertJson([
             'data' => [
-                'password' => [
-                    'A confirmação do campo password não corresponde.'
-                ]
+                'password' => [__('validation.confirmed',['attribute' => 'password'])],
             ],
         ]);
 //    $response->dump();
@@ -193,9 +209,7 @@ test('retornar 422 e mensagem ao informar senha com menos de 8 caracteres', func
     $response->assertStatus(422)
         ->assertJson([
             'data' => [
-                'password' => [
-                    'O campo password deve ter no mínimo 8 caracteres.'
-                ]
+                'password' => [__('validation.min.string',['attribute' => 'password', 'min' => '8'])]
             ],
         ]);
 //    $response->dump();
@@ -213,8 +227,8 @@ test('retornar 422 e mensagem ao informar senha sem nenhuma letra', function (){
         ->assertJson([
             'data' => [
                 'password' => [
-                    'O campo password deve conter pelo menos uma letra maiúscula e uma minúscula.',
-                    'O campo password deve conter pelo menos uma letra.',
+                    __('validation.password.mixed',['attribute' => 'password']),
+                    __('validation.password.letters',['attribute' => 'password']),
                 ]
             ],
         ]);
@@ -233,8 +247,8 @@ test('retornar 422 e mensagem ao informar senha sem nenhuma letra maiúscula', f
         ->assertJson([
             'data' => [
                 'password' => [
-                    'O campo password deve conter pelo menos uma letra maiúscula e uma minúscula.',
-                ]
+                    __('validation.password.mixed',['attribute' => 'password'])
+                ],
             ],
         ]);
 //    $response->dump();
@@ -252,7 +266,7 @@ test('retornar 422 e mensagem ao informar senha sem nenhum número', function ()
         ->assertJson([
             'data' => [
                 'password' => [
-                    'O campo password deve conter pelo menos um número.',
+                    __('validation.password.numbers',['attribute' => 'password'])
                 ]
             ],
         ]);
@@ -271,7 +285,7 @@ test('retornar 422 e mensagem ao informar senha sem nenhum caracter especial', f
         ->assertJson([
             'data' => [
                 'password' => [
-                    'O campo password deve conter pelo menos um símbolo.',
+                    __('validation.password.symbols',['attribute' => 'password'])
                 ]
             ],
         ]);
@@ -296,7 +310,7 @@ test('retornar 422 e mensagem ao informar um email já cadastrado', function (){
         ->assertJson([
             'data' => [
                 'email' => [
-                    'O email já está em uso.',
+                    __('validation.unique',['attribute' => 'email'])
                 ]
             ],
         ]);
