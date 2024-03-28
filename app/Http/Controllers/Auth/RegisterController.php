@@ -16,7 +16,7 @@ class RegisterController extends BaseController
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'regex:/^[a-zA-Z\s]*$/'],
             'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required',
+            'password' => ['required', 'confirmed',
                 Password::min(8)
                 ->letters()
                 ->mixedCase()
