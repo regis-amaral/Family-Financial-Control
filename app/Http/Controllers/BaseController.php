@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller as Controller;
+use Illuminate\Support\Facades\Response;
 class BaseController extends Controller
 {
     /**
@@ -24,7 +25,7 @@ class BaseController extends Controller
             'message' => $message,
         ];
 
-        return response()->json($response, $code);
+        return Response::json($response, $code);
     }
 
     /**
@@ -42,6 +43,6 @@ class BaseController extends Controller
             $response['data'] = $errorMessages;
         }
 
-        return response()->json($response, $code);
+        return Response::json($response, $code);
     }
 }
