@@ -5,7 +5,8 @@ use App\Models\User;
 
 uses(RefreshDatabase::class);
 
-test('efetua login com sucesso', function (){
+// pode efetuar login com sucesso
+test('can log in successfully', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => "jhon.due@gmail.com",
@@ -46,7 +47,8 @@ test('efetua login com sucesso', function (){
 //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao não informar o campo email', function (){
+// pode retornar 422 e mensagem ao não informar o campo email
+test('can return 422 and message when not informing the email field', function (){
     $user_data = [
         "password" => "MyPersonalP@assword123",
     ];
@@ -60,7 +62,8 @@ test('retornar 422 e mensagem ao não informar o campo email', function (){
     //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao não informar o campo password', function (){
+// pode retornar 422 e mensagem ao não informar o campo password
+test('can return 422 and message when not entering the password field', function (){
     $user_data = [
         "email" => "jhon.due@gmail.com",
     ];
@@ -74,7 +77,8 @@ test('retornar 422 e mensagem ao não informar o campo password', function (){
     //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao informar o campo email inválido', function (){
+// pode retornar 422 e mensagem ao informar o campo email inválido
+test('can return 422 and message when entering the invalid email field', function (){
     $user_data = [
         "email" => 123,
         "password" => "MyPersonalP@assword123",
@@ -89,7 +93,8 @@ test('retornar 422 e mensagem ao informar o campo email inválido', function (){
 //    $response->dump();
 });
 
-test('retornar 401 e mensagens ao tentar logar com um usuário desativado', function (){
+// pode retornar 401 e mensagem ao tentar logar com um usuário desativado
+test('can return 401 and message when trying to log in with a disabled user', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => "jhon.due@gmail.com",
@@ -109,7 +114,8 @@ test('retornar 401 e mensagens ao tentar logar com um usuário desativado', func
 //    $response->dump();
 });
 
-test('retornar 401 e mensagem ao tentar logar com credenciais incorretas', function (){
+// pode retornar 401 e mensagem ao tentar logar com credenciais incorretas
+test('can return 401 and message when trying to log in with incorrect credentials', function (){
     $user_data = [
         "email" => "jhon.due@gmail.com",
         "password" => "123",

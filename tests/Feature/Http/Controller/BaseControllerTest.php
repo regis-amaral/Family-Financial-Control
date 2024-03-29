@@ -5,7 +5,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Mockery\MockInterface;
 
-it('pode enviar uma resposta bem-sucedida com código 201', function () {
+// pode enviar uma resposta bem-sucedida com código 201
+test('can send a successful response with code 201', function () {
     // Definindo os parâmetros de entrada
     $result = ['data' => 'result data'];
     $code = 201;
@@ -30,7 +31,8 @@ it('pode enviar uma resposta bem-sucedida com código 201', function () {
     $this->assertSame($responseMock, $response);
 });
 
-it('throws exception', function () {
+// pode lançar uma exceção ao receber um response code inesperado
+test('can throw an exception when receiving an unexpected response code', function () {
     $result = ['data' => 'result data'];
     $code = 404;
     $message = __('messages.store.success');

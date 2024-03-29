@@ -5,8 +5,8 @@ use App\Models\User;
 
 uses(RefreshDatabase::class);
 
-
-test('registrar um usuário com sucesso', function (){
+// pode registrar um usuário com sucesso
+test('can register a user successfully', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => "jhon.due@gmail.com",
@@ -42,9 +42,8 @@ test('registrar um usuário com sucesso', function (){
 //    $response->dump();
 });
 
-// TESTA CAMPOS OBRIGATÓRIOS
-
-test('retornar 422 e mensagem ao não informar o campo nome', function (){
+// pode retornar 422 e mensagem ao não informar o campo nome
+test('can return 422 and message when not informing the name field', function (){
     $user_data = [
         "email" => "jhon.due@gmail.com",
         "password" => "MyPersonalP@assword123",
@@ -60,7 +59,8 @@ test('retornar 422 e mensagem ao não informar o campo nome', function (){
 //        $response->dump();
 });
 
-test('retornar 422 e mensagem ao não informar o campo email', function (){
+// pode retornar 422 e mensagem ao não informar o campo email
+test('can return 422 and message when not informing the email field', function (){
     $user_data = [
         "name" => "Jhon Due",
         "password" => "MyPersonalP@assword123",
@@ -76,7 +76,8 @@ test('retornar 422 e mensagem ao não informar o campo email', function (){
     //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao não informar o campo password', function (){
+// pode retornar 422 e mensagem ao não informar o campo password
+test('can return 422 and message when not entering the password field', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => "jhon.due@gmail.com",
@@ -92,7 +93,8 @@ test('retornar 422 e mensagem ao não informar o campo password', function (){
     //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao não informar o campo password_confirmation', function (){
+// pode retornar 422 e mensagem ao não informar o campo password_confirmation
+test('can return 422 and message when not informing the password_confirmation field', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => "jhon.due@gmail.com",
@@ -110,7 +112,8 @@ test('retornar 422 e mensagem ao não informar o campo password_confirmation', f
 
 // TESTA TIPOS DE DADOS INFORMADOS NO CAMPO
 
-test('retornar 422 e mensagens ao informar o campo nome com número', function (){
+// pode retornar 422 e mensagens ao informar o campo nome com número
+test('can return 422 and messages when entering the name field with number', function (){
     $user_data = [
         "name" => 123,
         "email" => "jhon.due@gmail.com",
@@ -130,7 +133,8 @@ test('retornar 422 e mensagens ao informar o campo nome com número', function (
 //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao informar o campo nome com número na string', function (){
+// pode retornar 422 e mensagem ao informar o campo nome com número na string
+test('can return 422 and message when entering the name field with number in the string', function (){
     $user_data = [
         "name" => "Jhon Due 2",
         "email" => "jhon.due@gmail.com",
@@ -147,7 +151,8 @@ test('retornar 422 e mensagem ao informar o campo nome com número na string', f
 //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao informar o campo nome com caracter especial na string', function (){
+// pode retornar 422 e mensagem ao informar o campo nome com caracter especial na string
+test('can return 422 and message when entering the name field with a special character in the string', function (){
     $user_data = [
         "name" => "Jhon Due ?",
         "email" => "jhon.due@gmail.com",
@@ -164,7 +169,8 @@ test('retornar 422 e mensagem ao informar o campo nome com caracter especial na 
 //    $response->dump();
 });
 
-test('retornar 422 e mensagens ao informar o campo email inválido', function (){
+// pode retornar 422 e mensagem ao informar o campo email inválido
+test('can return 422 and message when entering the invalid email field', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => 123,
@@ -181,7 +187,8 @@ test('retornar 422 e mensagens ao informar o campo email inválido', function ()
 //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao informar a confirmação de senha errada', function (){
+// pode retornar 422 e mensagem ao informar a confirmação de senha errada
+test('can return 422 and message when entering wrong password confirmation', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => "jhon.due@gmail.com",
@@ -198,7 +205,8 @@ test('retornar 422 e mensagem ao informar a confirmação de senha errada', func
 //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao informar senha com menos de 8 caracteres', function (){
+// pode retornar 422 e mensagem ao informar senha com menos de 8 caracteres
+test('can return 422 and message when entering a password with less than 8 characters', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => "jhon.due@gmail.com",
@@ -215,7 +223,8 @@ test('retornar 422 e mensagem ao informar senha com menos de 8 caracteres', func
 //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao informar senha sem nenhuma letra', function (){
+// pode retornar 422 e mensagens ao informar senha sem nenhuma letra
+test('can return 422 and messages when entering password without any letter', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => "jhon.due@gmail.com",
@@ -235,7 +244,8 @@ test('retornar 422 e mensagem ao informar senha sem nenhuma letra', function (){
 //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao informar senha sem nenhuma letra maiúscula', function (){
+// pode retornar 422 e mensagem ao informar senha sem nenhuma letra maiúscula
+test('can return 422 and message when entering password without any capital letters', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => "jhon.due@gmail.com",
@@ -254,7 +264,8 @@ test('retornar 422 e mensagem ao informar senha sem nenhuma letra maiúscula', f
 //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao informar senha sem nenhum número', function (){
+// pode retornar 422 e mensagem ao informar senha sem nenhum número
+test('can return 422 and message when entering password without any number', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => "jhon.due@gmail.com",
@@ -273,7 +284,8 @@ test('retornar 422 e mensagem ao informar senha sem nenhum número', function ()
 //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao informar senha sem nenhum caracter especial', function (){
+// pode retornar 422 e mensagem ao informar senha sem nenhum caracter especial
+test('can return 422 and message when entering password without any special characters', function (){
     $user_data = [
         "name" => "Jhon Due",
         "email" => "jhon.due@gmail.com",
@@ -292,7 +304,8 @@ test('retornar 422 e mensagem ao informar senha sem nenhum caracter especial', f
 //    $response->dump();
 });
 
-test('retornar 422 e mensagem ao informar um email já cadastrado', function (){
+// pode retornar 422 e mensagem ao informar um email já cadastrado
+test('can return 422 and message when entering an email already registered', function (){
 
     $user_data = [
         "name" => "Jhon Due",
