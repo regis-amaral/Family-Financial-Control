@@ -1,11 +1,11 @@
 <?php
 
 
-use App\Http\Controllers\FinancialServiceController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\FinancialControl\FinancialServiceController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 // GRUPO DE ROTAS NÃO AUTENTICADAS
 Route::middleware('guest')->group(function () {

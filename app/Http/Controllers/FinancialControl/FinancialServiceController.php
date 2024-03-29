@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\FinancialControl;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\FinancialServiceResource;
 use App\Models\FinancialService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class FinancialServiceController extends BaseController
+class FinancialServiceController extends Controller
 {
 
     public function index(Request $request): JsonResponse
