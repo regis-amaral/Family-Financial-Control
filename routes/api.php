@@ -22,7 +22,7 @@ Route::middleware('guest')->group(function () {
 // GRUPO DE ROTAS AUTENTICADAS
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return new \App\Http\Resources\Auth\UserResource($request->user());
     });
     Route::resource('financial-service', FinancialServiceController::class);
 });

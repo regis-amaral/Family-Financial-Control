@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\FinancialControl;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\FinancialServiceResource;
+use App\Http\Resources\FinancialControl\FinancialServiceCollection;
+use App\Http\Resources\FinancialControl\FinancialServiceResource;
 use App\Models\FinancialService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,9 +13,9 @@ use Illuminate\Support\Facades\Validator;
 class FinancialServiceController extends Controller
 {
 
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
-        return response()->json(FinancialService::all());
+        return new FinancialServiceCollection(FinancialService::paginate($request->per_page));
     }
 
     public function store(Request $request)
