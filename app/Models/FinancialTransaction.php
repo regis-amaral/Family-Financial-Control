@@ -23,6 +23,6 @@ class FinancialTransaction extends Model
 
     public function financial_service()
     {
-        return $this->hasOne(FinancialService::class);
+        return $this->belongsTo(FinancialService::class);
     }
 }

@@ -13,11 +13,17 @@ class FinancialService extends Model
 
     protected $fillable = [
         'id',
-        'name'
+        'name',
+        'user_id',
     ];
 
     public function financial_transactions()
     {
         return $this->hasMany(FinancialTransaction::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

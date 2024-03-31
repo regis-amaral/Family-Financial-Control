@@ -17,6 +17,7 @@ class FinancialServiceResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'user_id' => $this->user_id,
             'transactions' => $this->when($request->withTransactions, 'financial_transactions'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

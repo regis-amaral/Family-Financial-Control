@@ -8,6 +8,7 @@ use App\Http\Resources\FinancialControl\FinancialServiceResource;
 use App\Models\FinancialService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class FinancialServiceController extends Controller
@@ -15,7 +16,8 @@ class FinancialServiceController extends Controller
 
     public function index(Request $request)
     {
-        return new FinancialServiceCollection(FinancialService::paginate($request->per_page));
+        $user = Auth::user();
+        return new FinancialServiceCollection(FinancialService::where('user_id',$user->id)->paginate($request->per_page));
     }
 
     public function store(Request $request)
@@ -25,14 +27,15 @@ class FinancialServiceController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors(), 422);
+            return $this->sendError('Validation Error.', 422, $validator->errors());
         }
 
-        $financialService = FinancialService::create($request->all());
+        $financialService = $request->user()->financial_services()->create($request->all());
 
         return $this->sendResponse(new FinancialServiceResource($financialService),
-            'criado com sucesso',
-            201);
+            201,
+            'criado com sucesso'
+            );
 
     }
 
@@ -48,13 +51,13 @@ class FinancialServiceController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors(), 422);
+            return $this->sendError('Validation Error.', 422, $validator->errors());
         }
 
         $financialService
             ->fill($request->all())
             ->save();
-        return response()->json(['message' => 'atualizado com sucesso', 'data' => new FinancialServiceResource($financialService)], 200);
+        return response()->json(['message' => 'atualizado com sucesso', 200, 'data' => new FinancialServiceResource($financialService)]);
     }
 
     public function destroy(FinancialService $financialService)
