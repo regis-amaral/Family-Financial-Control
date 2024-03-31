@@ -10,13 +10,13 @@ class ControllerStub extends Controller {
     {
         return parent::sendResponse($result, $code, $message);
     }
-}
+};
 
 // pode lançar uma exceção ao receber um response code inesperado
 test('can throw an exception when receiving an unexpected response code', function () {
     $result = ['data' => 'result data'];
     $code = 404;
     $message = __('messages.store.success');
-    $baseController = new ControllerStub();
-    $response = $baseController->sendResponse($result, $code, $message);
+    $controllerStub = new ControllerStub();
+    $response = $controllerStub->sendResponse($result, $code, $message);
 })->throws(InvalidArgumentException::class, 'Invalid response code.');
