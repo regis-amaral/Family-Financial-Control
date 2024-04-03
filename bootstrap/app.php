@@ -7,6 +7,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -19,32 +20,17 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
-        // 404 - NOT FOUND
-        $exceptions->render(function (NotFoundHttpException | RouteNotFoundException $e, Request $request) {
-            if ($request->is('*')) {
-                return response()->json([
-                    'message' => 'not found'
-                ], 404);
-            }
+        // Padroniza retorno para o formato json
+        $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {
+            return true;
         });
 
-        // 500 - SERVER ERROR
+        // Padroniza mensagem de retorno
         $exceptions->render(function (HttpException $e, Request $request) {
             if ($request->is('*')) {
                 return response()->json([
-                    'message' => 'server error',
-                    'data' => $e->getMessage()
-                ], 500);
+                    'message' => !empty($e->getMessage()) ? $e->getMessage() : __('http.' . $e->getStatusCode())
+                ], $e->getStatusCode());
             }
         });
-
-        // 403 - NOT AUTHORIZED
-        $exceptions->render(function (UnauthorizedHttpException $e, Request $request) {
-            if ($request->is('*')) {
-                return response()->json([
-                    'message' => 'not authorized'
-                ], 403);
-            }
-        });
-
     })->create();
