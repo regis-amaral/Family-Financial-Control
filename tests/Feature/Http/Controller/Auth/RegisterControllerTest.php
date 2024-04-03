@@ -20,7 +20,6 @@ test('can register a user successfully', function (){
             'message' => __('messages.store.success'),
         ])
         ->assertJsonStructure([
-            'success',
             'data' => [
                 'token',
                 'name'
@@ -52,7 +51,7 @@ test('can return 422 and message when not informing the name field', function ()
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'name' => [__('validation.required',['attribute' => 'name'])]
             ],
         ]);
@@ -69,7 +68,7 @@ test('can return 422 and message when not informing the email field', function (
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'email' => [__('validation.required',['attribute' => 'email'])]
             ],
         ]);
@@ -86,7 +85,7 @@ test('can return 422 and message when not entering the password field', function
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'password' => [__('validation.required',['attribute' => 'password'])]
             ],
         ]);
@@ -103,7 +102,7 @@ test('can return 422 and message when not informing the password_confirmation fi
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'password' => [__('validation.confirmed',['attribute' => 'password'])],
             ],
         ]);
@@ -123,7 +122,7 @@ test('can return 422 and messages when entering the name field with number', fun
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'name' => [
                     __('validation.string',['attribute' => 'name']),
                     __('validation.regex',['attribute' => 'name']),
@@ -144,7 +143,7 @@ test('can return 422 and message when entering the name field with number in the
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'name' => [__('validation.regex',['attribute' => 'name'])],
             ],
         ]);
@@ -162,7 +161,7 @@ test('can return 422 and message when entering the name field with a special cha
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'name' => [__('validation.regex',['attribute' => 'name'])],
             ],
         ]);
@@ -180,7 +179,7 @@ test('can return 422 and message when entering the invalid email field', functio
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'email' => [__('validation.email',['attribute' => 'email'])],
             ],
         ]);
@@ -198,7 +197,7 @@ test('can return 422 and message when entering wrong password confirmation', fun
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'password' => [__('validation.confirmed',['attribute' => 'password'])],
             ],
         ]);
@@ -216,7 +215,7 @@ test('can return 422 and message when entering a password with less than 8 chara
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'password' => [__('validation.min.string',['attribute' => 'password', 'min' => '8'])]
             ],
         ]);
@@ -234,7 +233,7 @@ test('can return 422 and messages when entering password without any letter', fu
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'password' => [
                     __('validation.password.mixed',['attribute' => 'password']),
                     __('validation.password.letters',['attribute' => 'password']),
@@ -255,7 +254,7 @@ test('can return 422 and message when entering password without any capital lett
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'password' => [
                     __('validation.password.mixed',['attribute' => 'password'])
                 ],
@@ -275,7 +274,7 @@ test('can return 422 and message when entering password without any number', fun
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'password' => [
                     __('validation.password.numbers',['attribute' => 'password'])
                 ]
@@ -295,7 +294,7 @@ test('can return 422 and message when entering password without any special char
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'password' => [
                     __('validation.password.symbols',['attribute' => 'password'])
                 ]
@@ -321,7 +320,7 @@ test('can return 422 and message when entering an email already registered', fun
     $response = $this->post('/api/register', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'email' => [
                     __('validation.unique',['attribute' => 'email'])
                 ]

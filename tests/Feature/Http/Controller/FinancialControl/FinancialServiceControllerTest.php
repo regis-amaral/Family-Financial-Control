@@ -53,7 +53,6 @@ test('pode criar um novo serviço financeiro para o usuário logado', function (
             ]
         ])
         ->assertJsonStructure([
-            'success',
             'data' => [
                 'id',
                 'name',
@@ -76,7 +75,7 @@ test('ao criar um serviço financeiro, retorna erro ao não enviar o campo nome'
 
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'name' => [__('validation.required',['attribute' => 'name'])]
             ],
         ]);
@@ -96,7 +95,7 @@ test('ao criar um serviço financeiro, retorna erro não enviar o campo nome com
 
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'name' => [
                     __('validation.string',['attribute' => 'name']),
                     __('validation.regex',['attribute' => 'name']),
@@ -143,7 +142,9 @@ test('testa a consulta a um serviço financeiro de um usuário', function (){
 
     $response->assertStatus(200)
         ->assertJson([
-            'user_id' => $users[0]->id
+            'data' => [
+                'user_id' => $users[0]->id
+                ],
         ]);
 
     // solicita a visualização de um serviço financeiro de outro usuário
@@ -152,10 +153,9 @@ test('testa a consulta a um serviço financeiro de um usuário', function (){
         'Accept' => 'application/json',
     ])->get('/api/financial-service/' . $financialServicesUser2[9]->id);
 
-    $response->assertStatus(401)
+    $response->assertStatus(403)
     ->assertJson([
-        "success" => false,
-        "message" => "Unauthorized."
+        "message" => __('http.403')
     ]);
 
 //    $response->dump();
@@ -194,13 +194,13 @@ test('atualiza um serviço financeiro para o usuário logado', function () {
 
     // Verifica se a mensagem de sucesso está presente na resposta
     $response->assertJson([
-        'message' => 'atualizado com sucesso'
+        'message' => __('messages.update.success')
     ]);
 
 //    $response->dump();
 });
 
-test('retorna erro 401 ao tentar atualizar um serviço financeiro de outro usuário', function () {
+test('retorna erro 403 ao tentar atualizar um serviço financeiro de outro usuário', function () {
     // Cria um usuário e um token de acesso
     $users = User::factory(2)->create();
     $tokenUser2 = $users[1]->createToken('Test Token')->plainTextToken;
@@ -221,10 +221,9 @@ test('retorna erro 401 ao tentar atualizar um serviço financeiro de outro usuá
         'Accept' => 'application/json',
     ])->put('/api/financial-service/' . $financialService->id, $dataToUpdate);
 
-    $response->assertStatus(401)
+    $response->assertStatus(403)
         ->assertJson([
-            "success" => false,
-            "message" => "Unauthorized."
+            "message" => __('http.403')
         ]);
 
 //    $response->dump();
@@ -252,7 +251,7 @@ test('testa as validações ao atualizar um serviço financeiro', function () {
 
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'name' => [__('validation.required',['attribute' => 'name'])]
             ],
         ]);
@@ -270,7 +269,7 @@ test('testa as validações ao atualizar um serviço financeiro', function () {
 
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'name' => [
                     __('validation.string',['attribute' => 'name']),
                     __('validation.regex',['attribute' => 'name']),
@@ -307,7 +306,7 @@ test('remove um serviço financeiro pertencente ao usuário logado', function ()
 
     // Verifica se a mensagem de sucesso está presente na resposta
     $response->assertJson([
-        'message' => 'removido com sucesso'
+        'message' => __('messages.destroy.success')
     ]);
 });
 
@@ -330,8 +329,8 @@ test('tenta remover um serviço financeiro de outro usuário', function () {
         'Accept' => 'application/json',
     ])->delete('/api/financial-service/' . $financialService->id);
 
-    // Verifica se a resposta está correta (espera-se uma resposta 401 Unauthorized)
-    $response->assertStatus(401);
+    // Verifica se a resposta está correta (espera-se uma resposta 403 Proibido)
+    $response->assertStatus(403);
 
     // Verifica se o serviço financeiro ainda está presente no banco de dados
     $this->assertDatabaseHas('financial_services', [
@@ -340,7 +339,6 @@ test('tenta remover um serviço financeiro de outro usuário', function () {
 
     // Verifica se a mensagem de erro está presente na resposta JSON
     $response->assertJson([
-        'success' => false,
-        'message' => 'Unauthorized.'
+        'message' => __('http.403')
     ]);
 });

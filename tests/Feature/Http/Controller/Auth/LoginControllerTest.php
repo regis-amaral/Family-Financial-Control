@@ -25,12 +25,10 @@ test('can log in successfully', function (){
 
     $response->assertStatus(200)
         ->assertJsonStructure([
-            'success',
             'data' => [
                 'token',
                 'name'
-            ],
-            'message'
+            ]
         ]);
 
     // Obtenha o conteúdo JSON da resposta
@@ -55,7 +53,7 @@ test('can return 422 and message when not informing the email field', function (
     $response = $this->post('/api/login', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'email' => [__('validation.required',['attribute' => 'email'])]
             ],
         ]);
@@ -70,7 +68,7 @@ test('can return 422 and message when not entering the password field', function
     $response = $this->post('/api/login', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'password' => [__('validation.required',['attribute' => 'password'])]
             ],
         ]);
@@ -86,7 +84,7 @@ test('can return 422 and message when entering the invalid email field', functio
     $response = $this->post('/api/login', $user_data);
     $response->assertStatus(422)
         ->assertJson([
-            'data' => [
+            'message' => [
                 'email' => [__('validation.email',['attribute' => 'email'])],
             ],
         ]);
@@ -107,9 +105,9 @@ test('can return 401 and message when trying to log in with a disabled user', fu
     $user->save();
 
     $response = $this->post('/api/login', $user_data);
-    $response->assertStatus(401)
+    $response->assertStatus(403)
         ->assertJson([
-            'data' => __('messages.login.account_inactive'),
+            'message' => __('messages.login.account_inactive'),
         ]);
 //    $response->dump();
 });
@@ -123,7 +121,7 @@ test('can return 401 and message when trying to log in with incorrect credential
     $response = $this->post('/api/login', $user_data);
     $response->assertStatus(401)
         ->assertJson([
-            'data' => __('messages.login.invalid_credentials'),
+            'message' => __('messages.login.invalid_credentials'),
         ]);
 //    $response->dump();
 });
