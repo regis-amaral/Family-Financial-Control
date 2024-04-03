@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        api: __DIR__.'/../routes/api.php',
+        api: __DIR__ . '/../routes/api.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -28,8 +28,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // Padroniza mensagem de retorno
         $exceptions->render(function (HttpException $e, Request $request) {
             if ($request->is('*')) {
+                $jsonData = json_decode($e->getMessage());
                 return response()->json([
-                    'message' => !empty($e->getMessage()) ? $e->getMessage() : __('http.' . $e->getStatusCode())
+                    'message' => !empty($e->getMessage())
+                        ? ($jsonData !== null ? $jsonData : $e->getMessage())
+                        : __('http.' . $e->getStatusCode())
                 ], $e->getStatusCode());
             }
         });

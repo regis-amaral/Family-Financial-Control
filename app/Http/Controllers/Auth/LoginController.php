@@ -23,7 +23,7 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', 422, $validator->errors());
+            abort(422, $validator->errors()->toJson());
         }
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
@@ -32,7 +32,7 @@ class LoginController extends Controller
             // Verificar se o usuário está ativo
             if (!$user->active) {
                 Auth::logout();
-                return $this->sendError('Unauthorized.', 401, __('messages.login.account_inactive'));
+                abort(403,  __('messages.login.account_inactive'));
             }
 
             // Se todas as verificações passaram, criar e retornar o token de acesso
@@ -41,7 +41,7 @@ class LoginController extends Controller
 
             return $this->sendResponse($success);
         } else {
-            return $this->sendError('Unauthorized.', 401, __('messages.login.invalid_credentials'));
+            abort(401, __('messages.login.invalid_credentials'));
         }
     }
 

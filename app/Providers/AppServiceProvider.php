@@ -27,20 +27,17 @@ class AppServiceProvider extends ServiceProvider
         // TENTATIVAS DE LOGIN
         RateLimiter::for('login', function (Request $request) {
             return [
+
                 // 3 por minuto para um email específico
                 Limit::perMinute(3)->response(function (Request $request, array $headers)  {
-                    return response([
-                        'success' => false,
-                        'message' => "Três tentativas incorretas. Aguarde 60 segundos.",
-                    ], 429, $headers);
+                    abort(429, __('http.429'));
                 })->by($request->input('email')),
+
                 // 500 por minuto para um ip específico
                 Limit::perMinute(500)->response(function (Request $request, array $headers)  {
-                    return response([
-                        'success' => false,
-                        'message' => "Múltiplas solicitações. Aguarde 60 segundos.",
-                    ], 429, $headers);
+                    abort(429, __('http.429'));
                 })->by($request->ip())
+
             ];
         });
 

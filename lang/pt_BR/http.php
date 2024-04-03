@@ -8,6 +8,8 @@ return [
     '401' => 'Não autorizado.',
     '403' => 'Acesso proibido.',
     '404' => 'Recurso não encontrado.',
+    '419' => 'Sessão expirada. Por favor, faça login novamente.',
     '422' => 'Erro de validação.',
+    '429' => 'Muitas solicitações. Por favor, tente novamente mais tarde.',
     '500' => 'Erro interno do servidor.',
 ];
