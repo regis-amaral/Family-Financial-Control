@@ -17,13 +17,14 @@ class FinancialServiceController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        return new FinancialServiceCollection(FinancialService::where('user_id',$user->id)->paginate($request->per_page));
+        $financialServices = FinancialService::where('user_id',$user->id)->paginate($request->per_page);
+        return new FinancialServiceCollection($financialServices);
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string', 'regex:/^[a-zA-Z\s]*$/'],
         ]);
 
         if ($validator->fails()) {
@@ -41,13 +42,20 @@ class FinancialServiceController extends Controller
 
     public function show(FinancialService $financialService)
     {
+        if(Auth::user()->id != $financialService->user->id){
+            return $this->sendError('Unauthorized.', 401);
+        }
         return response()->json($financialService);
     }
 
     public function update(Request $request, FinancialService $financialService)
     {
+        if(Auth::user()->id != $financialService->user->id){
+            return $this->sendError('Unauthorized.', 401);
+        }
+
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string', 'regex:/^[a-zA-Z\s]*$/'],
         ]);
 
         if ($validator->fails()) {
@@ -62,6 +70,10 @@ class FinancialServiceController extends Controller
 
     public function destroy(FinancialService $financialService)
     {
+        if(Auth::user()->id != $financialService->user->id){
+            return $this->sendError('Unauthorized.', 401);
+        }
+
         $financialService->delete();
         return response()->json(['message' => 'removido com sucesso'], 200);
     }
