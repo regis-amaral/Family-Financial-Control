@@ -26,16 +26,19 @@ class RegisterController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', 422, $validator->errors());
+            abort(422, $validator->errors()->toJson());
         }
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-        $success['name'] =  $user->name;
+        $data['token'] =  $user->createToken('MyApp')->plainTextToken;
+        $data['name'] =  $user->name;
 
-        return $this->sendResponse($success, 201);
+        return response()->json([
+            'data' => $data,
+            'message' => __('messages.store.success')
+        ], 201);
     }
 
 }

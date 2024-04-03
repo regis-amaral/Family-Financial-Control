@@ -25,6 +25,15 @@ return Application::configure(basePath: dirname(__DIR__))
             return true;
         });
 
+        // Oculta mensagens adicionais para 404 code
+        $exceptions->render(function (NotFoundHttpException | RouteNotFoundException $e, Request $request) {
+            if ($request->is('*')) {
+                return response()->json([
+                    'message' => 'not found'
+                ], 404);
+            }
+        });
+
         // Padroniza mensagem de retorno
         $exceptions->render(function (HttpException $e, Request $request) {
             if ($request->is('*')) {

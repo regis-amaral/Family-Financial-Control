@@ -3,7 +3,6 @@
 return [
     '200' => 'Sucesso.',
     '201' => 'Criado com sucesso.',
-    '204' => 'Excluído com sucesso.',
     '400' => 'Requisição inválida.',
     '401' => 'Não autorizado.',
     '403' => 'Acesso proibido.',

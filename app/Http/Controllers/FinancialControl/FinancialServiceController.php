@@ -9,6 +9,7 @@ use App\Models\FinancialService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
 class FinancialServiceController extends Controller
@@ -24,57 +25,60 @@ class FinancialServiceController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'regex:/^[a-zA-Z\s]*$/'],
+            'name' => ['required', 'string', 'regex:/^[\pL\s.-]+$/u'],
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', 422, $validator->errors());
+            abort(422, $validator->errors()->toJson());
         }
 
         $financialService = $request->user()->financial_services()->create($request->all());
 
-        return $this->sendResponse(new FinancialServiceResource($financialService),
-            201,
-            'criado com sucesso'
-            );
-
+        return response()->json([
+            'data' => new FinancialServiceResource($financialService),
+            'message' => __('messages.store.success')
+        ], 201);
     }
 
     public function show(FinancialService $financialService)
     {
-        if(Auth::user()->id != $financialService->user->id){
-            return $this->sendError('Unauthorized.', 401);
+        if (Auth::user()->cannot('update', $financialService)) {
+            abort(403);
         }
-        return response()->json($financialService);
+        return response()->json(['data' => new FinancialServiceResource($financialService)]);
     }
 
     public function update(Request $request, FinancialService $financialService)
     {
-        if(Auth::user()->id != $financialService->user->id){
-            return $this->sendError('Unauthorized.', 401);
+        if ($request->user()->cannot('update', $financialService)) {
+            abort(403);
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'regex:/^[a-zA-Z\s]*$/'],
+            'name' => ['required', 'string', 'regex:/^[\pL\s.-]+$/u'],
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', 422, $validator->errors());
+            abort(422, $validator->errors()->toJson());
         }
 
         $financialService
             ->fill($request->all())
             ->save();
-        return response()->json(['message' => 'atualizado com sucesso', 200, 'data' => new FinancialServiceResource($financialService)]);
+
+        return response()->json([
+            'data' => new FinancialServiceResource($financialService),
+            'message' => __('messages.update.success')
+        ]);
     }
 
     public function destroy(FinancialService $financialService)
     {
-        if(Auth::user()->id != $financialService->user->id){
-            return $this->sendError('Unauthorized.', 401);
+        if (Auth::user()->cannot('update', $financialService)) {
+            abort(403);
         }
 
         $financialService->delete();
-        return response()->json(['message' => 'removido com sucesso'], 200);
+        return response()->json(['message' => __('messages.destroy.success')]);
     }
 }

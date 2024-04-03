@@ -36,10 +36,12 @@ class LoginController extends Controller
             }
 
             // Se todas as verificações passaram, criar e retornar o token de acesso
-            $success['token'] = $user->createToken('MyApp')->plainTextToken;
-            $success['name'] = $user->name;
+            $data['token'] = $user->createToken('MyApp')->plainTextToken;
+            $data['name'] = $user->name;
 
-            return $this->sendResponse($success);
+            return response()->json([
+                'data' => $data
+            ]);
         } else {
             abort(401, __('messages.login.invalid_credentials'));
         }
