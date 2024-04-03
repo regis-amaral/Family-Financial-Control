@@ -6,10 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\FinancialControl\FinancialServiceCollection;
 use App\Http\Resources\FinancialControl\FinancialServiceResource;
 use App\Models\FinancialService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 
 class FinancialServiceController extends Controller
@@ -42,18 +40,11 @@ class FinancialServiceController extends Controller
 
     public function show(FinancialService $financialService)
     {
-        if (Auth::user()->cannot('update', $financialService)) {
-            abort(403);
-        }
         return response()->json(['data' => new FinancialServiceResource($financialService)]);
     }
 
     public function update(Request $request, FinancialService $financialService)
     {
-        if ($request->user()->cannot('update', $financialService)) {
-            abort(403);
-        }
-
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'regex:/^[\pL\s.-]+$/u'],
         ]);
@@ -74,10 +65,6 @@ class FinancialServiceController extends Controller
 
     public function destroy(FinancialService $financialService)
     {
-        if (Auth::user()->cannot('update', $financialService)) {
-            abort(403);
-        }
-
         $financialService->delete();
         return response()->json(['message' => __('messages.destroy.success')]);
     }

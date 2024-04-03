@@ -29,7 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (NotFoundHttpException | RouteNotFoundException $e, Request $request) {
             if ($request->is('*')) {
                 return response()->json([
-                    'message' => 'not found'
+                    'message' => __('http.404')
                 ], 404);
             }
         });
