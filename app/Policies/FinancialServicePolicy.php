@@ -33,7 +33,7 @@ class FinancialServicePolicy
     {
         return $user->id === $financialService->user_id
             ? Response::allow()
-            : Response::deny(__('http.403'));
+            : Response::denyAsNotFound(__('http.404'), 404);
     }
 
     /**
@@ -51,7 +51,7 @@ class FinancialServicePolicy
     {
         return $user->id === $financialService->user_id
             ? Response::allow()
-            : Response::deny(__('http.403'));
+            : Response::denyAsNotFound(__('http.404'), 404);
     }
 
     /**
@@ -61,7 +61,7 @@ class FinancialServicePolicy
     {
         return $user->id === $financialService->user_id
             ? Response::allow()
-            : Response::deny(__('http.403'));
+            : Response::denyAsNotFound(__('http.404'), 404);
     }
 
     /**

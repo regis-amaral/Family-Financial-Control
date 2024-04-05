@@ -14,6 +14,16 @@ class FinancialTransactionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'date' => $this->date,
+            'description' => $this->description,
+            'credit' => $this->credit,
+            'debit' => $this->debit,
+            'note' => $this->note,
+            'financial_service_id' => $this->financial_service_id,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
     }
 }

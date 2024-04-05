@@ -14,11 +14,21 @@ class FinancialTransaction extends Model
     protected $fillable = [
         'id',
         'date',
+        'identifier',
         'description',
         'credit',
         'debit',
         'note',
         'financial_service_id'
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'identifier'
     ];
 
     public function financial_service()
