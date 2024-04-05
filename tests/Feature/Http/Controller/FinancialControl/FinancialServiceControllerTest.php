@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\FinancialService;
 use App\Models\User;
+use App\Models\FinancialTransaction;
+use Illuminate\Support\Facades\Validator;
 
 uses(RefreshDatabase::class);
 
@@ -21,7 +23,7 @@ test('pode retornar uma lista com todos os serviços financeiros', function (){
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Accept' => 'application/json',
-    ])->get('/api/financial-service');
+    ])->get('/api/financial/services');
 
     $response->assertStatus(200);
 
@@ -43,7 +45,7 @@ test('pode criar um novo serviço financeiro para o usuário logado', function (
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Accept' => 'application/json',
-    ])->post('/api/financial-service', $data);
+    ])->post('/api/financial/services', $data);
 
     $response->assertStatus(201)
         ->assertJson([
@@ -71,7 +73,7 @@ test('ao criar um serviço financeiro, retorna erro ao não enviar o campo nome'
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Accept' => 'application/json',
-    ])->post('/api/financial-service', $data);
+    ])->post('/api/financial/services', $data);
 
     $response->assertStatus(422)
         ->assertJson([
@@ -91,7 +93,7 @@ test('ao criar um serviço financeiro, retorna erro não enviar o campo nome com
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Accept' => 'application/json',
-    ])->post('/api/financial-service', $data);
+    ])->post('/api/financial/services', $data);
 
     $response->assertStatus(422)
         ->assertJson([
@@ -115,7 +117,7 @@ test('retorna erro 401 ao não enviar um token válido de usuário', function ()
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token . '123',
         'Accept' => 'application/json',
-    ])->post('/api/financial-service', $data);
+    ])->post('/api/financial/services', $data);
 
     $response->assertStatus(401);
 //    $response->dump();
@@ -138,7 +140,7 @@ test('testa a consulta a um serviço financeiro de um usuário', function (){
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $tokenUser1,
         'Accept' => 'application/json',
-    ])->get('/api/financial-service/' . $financialServicesUser1[0]->id);
+    ])->get('/api/financial/services/' . $financialServicesUser1[0]->id);
 
     $response->assertStatus(200)
         ->assertJson([
@@ -151,11 +153,11 @@ test('testa a consulta a um serviço financeiro de um usuário', function (){
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $tokenUser1,
         'Accept' => 'application/json',
-    ])->get('/api/financial-service/' . $financialServicesUser2[9]->id);
+    ])->get('/api/financial/services/' . $financialServicesUser2[9]->id);
 
-    $response->assertStatus(403)
+    $response->assertStatus(404)
     ->assertJson([
-        "message" => __('http.403')
+        "message" => __('http.404')
     ]);
 
 //    $response->dump();
@@ -181,7 +183,7 @@ test('atualiza um serviço financeiro para o usuário logado', function () {
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Accept' => 'application/json',
-    ])->put('/api/financial-service/' . $financialService->id, $dataToUpdate);
+    ])->put('/api/financial/services/' . $financialService->id, $dataToUpdate);
 
     // Verifica se a resposta está OK
     $response->assertStatus(200);
@@ -219,11 +221,11 @@ test('retorna erro 403 ao tentar atualizar um serviço financeiro de outro usuá
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $tokenUser2,
         'Accept' => 'application/json',
-    ])->put('/api/financial-service/' . $financialService->id, $dataToUpdate);
+    ])->put('/api/financial/services/' . $financialService->id, $dataToUpdate);
 
-    $response->assertStatus(403)
+    $response->assertStatus(404)
         ->assertJson([
-            "message" => __('http.403')
+            "message" => __('http.404')
         ]);
 
 //    $response->dump();
@@ -247,7 +249,7 @@ test('testa as validações ao atualizar um serviço financeiro', function () {
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Accept' => 'application/json',
-    ])->put('/api/financial-service/' . $financialService->id, $dataToUpdate);
+    ])->put('/api/financial/services/' . $financialService->id, $dataToUpdate);
 
     $response->assertStatus(422)
         ->assertJson([
@@ -265,7 +267,7 @@ test('testa as validações ao atualizar um serviço financeiro', function () {
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Accept' => 'application/json',
-    ])->put('/api/financial-service/' . $financialService->id, $dataToUpdate);
+    ])->put('/api/financial/services/' . $financialService->id, $dataToUpdate);
 
     $response->assertStatus(422)
         ->assertJson([
@@ -294,7 +296,7 @@ test('remove um serviço financeiro pertencente ao usuário logado', function ()
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Accept' => 'application/json',
-    ])->delete('/api/financial-service/' . $financialService->id);
+    ])->delete('/api/financial/services/' . $financialService->id);
 
     // Verifica se a resposta está OK
     $response->assertStatus(200);
@@ -327,10 +329,10 @@ test('tenta remover um serviço financeiro de outro usuário', function () {
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Accept' => 'application/json',
-    ])->delete('/api/financial-service/' . $financialService->id);
+    ])->delete('/api/financial/services/' . $financialService->id);
 
-    // Verifica se a resposta está correta (espera-se uma resposta 403 Proibido)
-    $response->assertStatus(403);
+    // Verifica se a resposta está correta (espera-se uma resposta 404)
+    $response->assertStatus(404);
 
     // Verifica se o serviço financeiro ainda está presente no banco de dados
     $this->assertDatabaseHas('financial_services', [
@@ -339,6 +341,81 @@ test('tenta remover um serviço financeiro de outro usuário', function () {
 
     // Verifica se a mensagem de erro está presente na resposta JSON
     $response->assertJson([
-        'message' => __('http.403')
+        'message' => __('http.404')
+    ]);
+});
+
+// lança o erro 500 ao receber uma queryException ao tentar deletar
+it('throws error 500 when receiving a queryException when trying to delete', function () {
+    $user = User::factory()->create();
+
+    // Cria um token de acesso para o primeiro usuário
+    $token = $user->createToken('Test Token')->plainTextToken;
+
+    // Crie um serviço financeiro
+    $financialService = FinancialService::factory()->create([
+        'user_id' => $user->id,
+    ]);
+
+    // Crie uma transação financeira associada ao serviço financeiro
+    FinancialTransaction::factory()->create([
+        'financial_service_id' => $financialService->id,
+        "date" => "2024-04-04 00:00:00",
+        "description" => "mercado garcia",
+        "debit" => "10.50",
+        "note" => "pgto despesas extras"
+    ]);
+
+    // Envia a solicitação DELETE
+    $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json',
+    ])->delete('/api/financial/services/' . $financialService->id);
+
+    // Verifica se a resposta está correta
+    $response->assertStatus(500);
+
+    // Verifica se o serviço financeiro ainda está presente no banco de dados
+    $this->assertDatabaseHas('financial_services', [
+        'id' => $financialService->id,
+    ]);
+
+    // Verifica se a mensagem de erro está presente na resposta JSON
+    $response->assertJson([
+        'message' => __('messages.destroy.error')
+    ]);
+});
+
+// lança o erro 500 ao receber uma queryException ao tentar atualizar
+it('throws error 500 when receiving a queryexception when trying to update', function () {
+    // Cria um mock para o Validator
+    Validator::shouldReceive('make->fails')
+        ->andReturn(false);
+
+    $user = User::factory()->create();
+
+    // Cria um token de acesso para o primeiro usuário
+    $token = $user->createToken('Test Token')->plainTextToken;
+
+    // Crie um serviço financeiro
+    $financialServices = FinancialService::factory(2)->create([
+        'user_id' => $user->id,
+    ]);
+
+    // Envia a solicitação DELETE com dado inválido
+    $data['id'] = 100;
+    $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $token,
+        'Accept' => 'application/json',
+    ])->put('/api/financial/services/' . $financialServices[0]->id, [
+        "id" => $financialServices[1]->id
+    ]);
+
+    // Verifica se a resposta está correta
+    $response->assertStatus(500);
+
+    // Verifica se a mensagem de erro está presente na resposta JSON
+    $response->assertJson([
+        'message' => __('messages.update.error')
     ]);
 });
